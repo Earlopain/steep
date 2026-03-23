@@ -11,7 +11,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        ruby: ['3.2', '3.3', '3.4']
+        ruby: ['3.2', '3.3', '3.4', '4.0']
         task:
           - test
           - test:output
@@ -54,4 +54,3 @@ jobs:
         bin/setup
         bundle exec ruby bin/generate-diagnostics-docs.rb
         git diff --exit-code HEAD -- manual
-
