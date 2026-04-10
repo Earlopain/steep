@@ -6,14 +6,13 @@ class AST__IgnoreTest < Minitest::Test
   Ignore = Steep::AST::Ignore
 
   def parse(ruby)
-    buffer = ::Parser::Source::Buffer.new("a.rb", 1, source: ruby)
-    node, comments = Parser::Ruby33.new.parse_with_comments(buffer)
+    comments = Prism.parse_comments(ruby, version: "3.3")
 
-    [node, comments, RBS::Buffer.new(name: "a.rb", content: ruby)]
+    [comments, RBS::Buffer.new(name: "a.rb", content: ruby)]
   end
 
   def test_parse_ignore_start
-    _, comments, buf = parse(<<~RUBY)
+    comments, buf = parse(<<~RUBY)
       # steep:ignore:start
       # steep:ignore:start123
       # steep:ignore:start hello
@@ -31,7 +30,7 @@ class AST__IgnoreTest < Minitest::Test
   end
 
   def test_parse_ignore_end
-    _, comments, buf = parse(<<~RUBY)
+    comments, buf = parse(<<~RUBY)
       # steep:ignore:end
       # steep:ignore:end123
       # steep:ignore:end world
@@ -49,7 +48,7 @@ class AST__IgnoreTest < Minitest::Test
   end
 
   def test_parse_ignore__empty
-    _, comments, buf = parse(<<~RUBY)
+    comments, buf = parse(<<~RUBY)
       # steep:ignore
       # steep:ignore123
     RUBY
@@ -67,7 +66,7 @@ class AST__IgnoreTest < Minitest::Test
   end
 
   def test_parse_ignore__all
-    _, comments, buf = parse(<<~RUBY)
+    comments, buf = parse(<<~RUBY)
       # steep:ignore
       # steep:ignore123
     RUBY
@@ -85,7 +84,7 @@ class AST__IgnoreTest < Minitest::Test
   end
 
   def test_parse_ignore__diagnostics
-    _, comments, buf = parse(<<~RUBY)
+    comments, buf = parse(<<~RUBY)
       # steep:ignore Foo
       # steep:ignore Foo, Bar,
     RUBY
@@ -110,7 +109,7 @@ class AST__IgnoreTest < Minitest::Test
   end
 
   def test_parse_ignore__crlf
-    _, comments, buf = parse(<<~RUBY)
+    comments, buf = parse(<<~RUBY)
       \r
       # steep:ignore Foo
       # steep:ignore Foo, Bar,

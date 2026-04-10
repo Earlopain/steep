@@ -91,11 +91,13 @@ module Steep
       end
 
       def self.parse(comment, buffer)
-        return unless comment.inline?
+        return if comment.is_a?(Prism::EmbDocComment)
 
-        begin_pos = buffer.loc_to_pos([comment.loc.line, comment.loc.column])
-        end_pos = buffer.loc_to_pos([comment.loc.last_line, comment.loc.last_column])
-        comment_location = RBS::Location.new(buffer, begin_pos, end_pos)
+        comment_location = RBS::Location.new(
+          buffer,
+          comment.location.start_character_offset,
+          comment.location.end_character_offset
+        )
         scanner = BufferScanner.new(comment_location)
 
         scanner.scan(/#/)

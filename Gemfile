@@ -7,6 +7,7 @@ gem "rake"
 gem "minitest", "~> 5.25"
 gem "minitest-hooks"
 gem 'minitest-slow_test'
+gem "ruby-lsp"
 
 group :development, optional: true do
   gem "stackprof", platform: :mri, require: false

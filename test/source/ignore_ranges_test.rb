@@ -6,9 +6,7 @@ class SourceIgnoreRangesTest < Minitest::Test
   include TestHelper
 
   def parse(source_code)
-    _, comments = Source.new_parser().parse_with_comments(
-      ::Parser::Source::Buffer.new("a.rb", 1, source: source_code)
-    )
+    comments = Prism.parse_comments(source_code, version: "3.3")
 
     buffer = RBS::Buffer.new(name: Pathname("a.rb"), content: source_code)
 
